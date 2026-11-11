@@ -13,6 +13,7 @@ from backend.app.api.v1.patients import router as patients_router
 from backend.app.api.v1.doctors import router as doctors_router
 from backend.app.api.v1.appointments import router as appointments_router
 from backend.app.api.v1.billing import router as billing_router
+from backend.app.api.v1.reports import router as reports_router
 
 # Create tables in development mode if SQLite is used
 Base.metadata.create_all(bind=engine)
@@ -82,6 +83,7 @@ app.include_router(patients_router, prefix=settings.API_V1_PREFIX)
 app.include_router(doctors_router, prefix=settings.API_V1_PREFIX)
 app.include_router(appointments_router, prefix=settings.API_V1_PREFIX)
 app.include_router(billing_router, prefix=settings.API_V1_PREFIX)
+app.include_router(reports_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])

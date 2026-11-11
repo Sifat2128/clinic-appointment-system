@@ -5,6 +5,12 @@ from backend.app.patterns.factories.payment_factory import (
     MobileBankingPaymentProcessor,
     PaymentProcessorFactory,
 )
+from backend.app.patterns.factories.report_factory import (
+    IReportGenerator,
+    DailyAppointmentReportGenerator,
+    RevenueReportGenerator,
+    ReportGeneratorFactory,
+)
 
 __all__ = [
     "IPaymentProcessor",
@@ -12,4 +18,8 @@ __all__ = [
     "CardPaymentProcessor",
     "MobileBankingPaymentProcessor",
     "PaymentProcessorFactory",
+    "IReportGenerator",
+    "DailyAppointmentReportGenerator",
+    "RevenueReportGenerator",
+    "ReportGeneratorFactory",
 ]

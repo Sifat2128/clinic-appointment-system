@@ -1,5 +1,5 @@
 """Tests for Reports Module and ReportGeneratorFactory (Daily Appointments and Revenue Analytics)."""
-from datetime import date
+from datetime import date, datetime, time
 import pytest
 from backend.app.core.security import get_password_hash, create_access_token
 from backend.app.models.user import User, UserRole
@@ -67,6 +67,7 @@ def seed_report_data(db_session):
         appointment_id=appt1.id, patient_id=p1.id, gross_amount=1500.0,
         discount_type="NONE", discount_amount=0.0, tax_amount=75.0,
         net_total=1575.0, status=InvoiceStatus.PAID.value,
+        created_at=datetime.combine(target_d, time(10, 0)),
     )
     db_session.add(inv)
     db_session.commit()
