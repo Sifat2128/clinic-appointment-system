@@ -5,11 +5,15 @@ from backend.app.schemas.doctor import (
     DoctorScheduleBase, DoctorScheduleCreate, DoctorScheduleResponse, DoctorSlotsResponse
 )
 from backend.app.schemas.appointment import AppointmentBase, AppointmentCreate, AppointmentCancel, AppointmentResponse
+from backend.app.schemas.billing import (
+    InvoiceCreate, InvoiceResponse, PaymentCreate, PaymentResponse, PaymentCheckoutResponse
+)
 
 __all__ = [
     "UserBase", "UserCreate", "UserUpdate", "UserResponse", "UserLogin", "TokenResponse", "TokenPayload",
     "PatientBase", "PatientCreate", "PatientUpdate", "PatientResponse",
     "DoctorBase", "DoctorCreate", "DoctorUpdate", "DoctorResponse",
     "DoctorScheduleBase", "DoctorScheduleCreate", "DoctorScheduleResponse", "DoctorSlotsResponse",
-    "AppointmentBase", "AppointmentCreate", "AppointmentCancel", "AppointmentResponse"
+    "AppointmentBase", "AppointmentCreate", "AppointmentCancel", "AppointmentResponse",
+    "InvoiceCreate", "InvoiceResponse", "PaymentCreate", "PaymentResponse", "PaymentCheckoutResponse"
 ]
