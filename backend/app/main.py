@@ -1,6 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.config import settings
+from backend.app.database import engine, Base
+# Import all models to ensure metadata registration
+import backend.app.models.user
+from backend.app.api.v1.auth import router as auth_router
+
+# Create tables in development mode if SQLite is used
+Base.metadata.create_all(bind=engine)
 
 openapi_tags = [
     {
@@ -60,6 +67,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register API routers under /api/v1
+app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])
