@@ -80,22 +80,25 @@ export default function BookAppointment() {
 
     setSubmitting(true);
     try {
+      const cleanTime = selectedSlot.includes('T')
+        ? selectedSlot.split('T')[1].slice(0, 5)
+        : selectedSlot.slice(0, 5);
+
       const payload = {
         patient_id: Number(selectedPatientId),
         doctor_id: Number(selectedDoctorId),
-        appointment_time: selectedSlot,
-        duration_minutes: 30,
-        reason_for_visit: reason,
+        appointment_date: appointmentDate,
+        appointment_time: cleanTime,
+        reason: reason || 'General Consultation',
       };
 
       const result = await appointmentsApi.create(payload);
       setSuccessMessage(
-        `Appointment successfully booked! (ID: #${result.id}) Confirmed for ${new Date(result.appointment_time).toLocaleString()}`
+        `Appointment successfully booked! (ID: #${result.id}) Confirmed for ${result.appointment_date} at ${result.appointment_time}`
       );
       // Refresh available slots
       const slots = await doctorsApi.getAvailableSlots(selectedDoctorId, appointmentDate);
       setAvailableSlots(slots);
-      if (slots.length > 0) setSelectedSlot(slots[0].slot_start);
     } catch (err) {
       // 409 Conflict check
       const detail = err.data?.detail || err.message || 'Booking conflict detected';
@@ -138,10 +141,10 @@ export default function BookAppointment() {
                 onChange={(e) => setSelectedPatientId(e.target.value)}
                 required
               >
-                {patients.length === 0 && <option value="">No patients registered</option>}
+                {patients.length === 0 && <option value="">Loading patients...</option>}
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>
-                    #{p.id} - {p.first_name} {p.last_name} ({p.phone})
+                    #{p.id} - {p.full_name || 'Patient'} ({p.phone})
                   </option>
                 ))}
               </select>
@@ -191,13 +194,18 @@ export default function BookAppointment() {
                   required
                 >
                   {availableSlots.map((slot, index) => {
-                    const timeStr = new Date(slot.slot_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const display = slot.display_time || slot.slot_start;
                     return (
                       <option key={index} value={slot.slot_start} data-testid="slot-option">
-                        {timeStr} - Slot {index + 1}
+                        {display} (Slot #{index + 1})
                       </option>
                     );
                   })}
+                  {selectedSlot && !availableSlots.some((s) => s.slot_start === selectedSlot) && (
+                    <option value={selectedSlot} data-testid="slot-option">
+                      {selectedSlot} (Previously Booked)
+                    </option>
+                  )}
                 </select>
               ) : (
                 <div className="alert alert-warning">

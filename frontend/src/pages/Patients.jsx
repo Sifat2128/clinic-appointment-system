@@ -10,15 +10,14 @@ export default function Patients() {
   const [success, setSuccess] = useState('');
 
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
+    full_name: '',
     phone: '',
     date_of_birth: '1995-05-15',
-    gender: 'MALE',
-    blood_group: 'O+',
+    gender: 'Male',
     address: '123 University Road',
     emergency_contact: '555-999-000',
+    medical_history: 'None',
+    allergies: 'None',
   });
 
   const fetchPatients = async (searchTerm = '') => {
@@ -52,15 +51,14 @@ export default function Patients() {
       setSuccess('Patient successfully registered!');
       setShowModal(false);
       setFormData({
-        first_name: '',
-        last_name: '',
-        email: '',
+        full_name: '',
         phone: '',
         date_of_birth: '1995-05-15',
-        gender: 'MALE',
-        blood_group: 'O+',
+        gender: 'Male',
         address: '123 University Road',
         emergency_contact: '555-999-000',
+        medical_history: 'None',
+        allergies: 'None',
       });
       fetchPatients(search);
     } catch (err) {
@@ -139,7 +137,6 @@ export default function Patients() {
                   <th>ID</th>
                   <th>Full Name</th>
                   <th>Phone</th>
-                  <th>Email</th>
                   <th>Gender</th>
                   <th>DOB</th>
                   <th>Actions</th>
@@ -149,9 +146,8 @@ export default function Patients() {
                 {patients.map((p) => (
                   <tr key={p.id} data-testid={`patient-row-${p.id}`}>
                     <td>#{p.id}</td>
-                    <td><strong>{p.first_name} {p.last_name}</strong></td>
+                    <td><strong>{p.full_name}</strong></td>
                     <td>{p.phone}</td>
-                    <td>{p.email}</td>
                     <td>{p.gender}</td>
                     <td>{p.date_of_birth}</td>
                     <td>
@@ -181,33 +177,13 @@ export default function Patients() {
             <form onSubmit={handleCreatePatient}>
               <div className="modal-body form-grid">
                 <div className="form-group">
-                  <label>First Name *</label>
+                  <label>Full Name *</label>
                   <input
                     type="text"
                     required
-                    data-testid="patient-first-name"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Last Name *</label>
-                  <input
-                    type="text"
-                    required
-                    data-testid="patient-last-name"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    data-testid="patient-email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    data-testid="patient-full-name"
+                    value={formData.full_name}
+                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   />
                 </div>
                 <div className="form-group">
@@ -237,19 +213,10 @@ export default function Patients() {
                     value={formData.gender}
                     onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                   >
-                    <option value="MALE">Male</option>
-                    <option value="FEMALE">Female</option>
-                    <option value="OTHER">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </select>
-                </div>
-                <div className="form-group">
-                  <label>Blood Group</label>
-                  <input
-                    type="text"
-                    data-testid="patient-blood-group"
-                    value={formData.blood_group}
-                    onChange={(e) => setFormData({ ...formData, blood_group: e.target.value })}
-                  />
                 </div>
                 <div className="form-group">
                   <label>Address</label>
@@ -258,6 +225,15 @@ export default function Patients() {
                     data-testid="patient-address"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Emergency Contact</label>
+                  <input
+                    type="text"
+                    data-testid="patient-emergency-contact"
+                    value={formData.emergency_contact}
+                    onChange={(e) => setFormData({ ...formData, emergency_contact: e.target.value })}
                   />
                 </div>
               </div>

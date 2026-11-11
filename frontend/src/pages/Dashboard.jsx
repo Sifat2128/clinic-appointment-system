@@ -119,7 +119,7 @@ export default function Dashboard() {
                           <td>#{apt.id}</td>
                           <td>Patient #{apt.patient_id}</td>
                           <td>Doctor #{apt.doctor_id}</td>
-                          <td>{new Date(apt.appointment_time).toLocaleString()}</td>
+                          <td>{apt.appointment_date} {apt.appointment_time}</td>
                           <td>
                             <span className={`status-badge status-${apt.status.toLowerCase()}`}>
                               {apt.status}

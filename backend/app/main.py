@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.config import settings
-from backend.app.database import engine, Base
+from backend.app.database import engine, Base, SessionLocal
+from backend.app.db.seed import seed_initial_data
 # Import all models to ensure metadata registration
 import backend.app.models.user
 import backend.app.models.patient
@@ -17,6 +18,8 @@ from backend.app.api.v1.reports import router as reports_router
 
 # Create tables in development mode if SQLite is used
 Base.metadata.create_all(bind=engine)
+with SessionLocal() as db_session:
+    seed_initial_data(db_session)
 
 openapi_tags = [
     {
