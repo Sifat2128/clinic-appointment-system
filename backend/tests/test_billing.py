@@ -98,12 +98,12 @@ def test_strategy_pattern_discount_calculations():
     assert res_none["tax_amount"] == 50.0  # 5% tax
     assert res_none["net_total"] == 1050.0
 
-    # 2. Student Discount (15%)
+    # 2. Student Discount (18% resolved concession rate)
     res_student = engine.calculate_bill(gross_fee, StudentDiscountStrategy())
-    assert res_student["discount_amount"] == 150.0
-    assert res_student["taxable_subtotal"] == 850.0
-    assert res_student["tax_amount"] == 42.5
-    assert res_student["net_total"] == 892.5
+    assert res_student["discount_amount"] == 180.0
+    assert res_student["taxable_subtotal"] == 820.0
+    assert res_student["tax_amount"] == 41.0
+    assert res_student["net_total"] == 861.0
 
     # 3. Senior Citizen Discount (20%)
     res_senior = engine.calculate_bill(gross_fee, SeniorCitizenDiscountStrategy())
@@ -149,8 +149,8 @@ def test_create_invoice_api_with_discount_strategy(client, cashier_headers, setu
     data = response.json()
     assert data["gross_amount"] == 1000.0
     assert data["discount_type"] == "STUDENT"
-    assert data["discount_amount"] == 150.0
-    assert data["net_total"] == 892.5
+    assert data["discount_amount"] == 180.0
+    assert data["net_total"] == 861.0
     assert data["status"] == "PENDING"
 
 
