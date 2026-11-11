@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -45,5 +45,6 @@ class InvoiceResponse(BaseModel):
 
 class PaymentCheckoutResponse(BaseModel):
     message: str = "Payment successfully processed"
+    audit_timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Audit timestamp of transaction settlement")
     invoice: InvoiceResponse
     payment: PaymentResponse
