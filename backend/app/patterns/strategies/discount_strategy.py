@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 # Clinic Standard Discount Constants
-STUDENT_DISCOUNT_PERCENTAGE = 0.15
+STUDENT_DISCOUNT_PERCENTAGE = 0.18  # Revised standard student concession rate to 18%
 SENIOR_DISCOUNT_PERCENTAGE = 0.20
 INSURANCE_DISCOUNT_PERCENTAGE = 0.30
 HEALTHCARE_TAX_RATE = 0.05
