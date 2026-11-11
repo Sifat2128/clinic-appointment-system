@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
@@ -6,6 +7,7 @@ from backend.app.models.user import User, UserRole
 from backend.app.models.doctor import Doctor, DoctorSchedule
 from backend.app.repositories.doctor_repository import DoctorRepository
 from backend.app.repositories.user_repository import UserRepository
+from backend.app.repositories.appointment_repository import AppointmentRepository
 from backend.app.schemas.doctor import (
     DoctorCreate, DoctorUpdate, DoctorResponse,
     DoctorScheduleCreate, DoctorScheduleResponse, DoctorSlotsResponse
@@ -169,3 +171,59 @@ def get_doctor_slots(
 
     slots = generate_time_slots(schedule.start_time, schedule.end_time, schedule.slot_duration_minutes)
     return DoctorSlotsResponse(doctor_id=doctor_id, day_of_week=day_of_week, slots=slots)
+
+
+@router.get(
+    "/doctors/{doctor_id}/available-slots",
+    tags=["Doctors & Schedules"],
+    summary="Get Available Real-Time Slots for Doctor by Date",
+    description="Calculates real-time availability for a doctor on a specific date, excluding already booked slots.",
+)
+def get_available_slots_by_date(
+    doctor_id: int,
+    date: str = Query(..., description="Date formatted as YYYY-MM-DD"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    doc_repo = DoctorRepository(db)
+    doctor = doc_repo.get_by_id(doctor_id)
+    if not doctor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Doctor with ID {doctor_id} not found.",
+        )
+
+    try:
+        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid date format. Expected YYYY-MM-DD.",
+        )
+
+    day_name = parsed_date.strftime("%A")  # e.g. "Monday"
+    schedule = doc_repo.get_schedule_by_day(doctor_id, day_name)
+    if not schedule:
+        return []
+
+    time_slots = generate_time_slots(schedule.start_time, schedule.end_time, schedule.slot_duration_minutes)
+
+    apt_repo = AppointmentRepository(db)
+    booked_appointments = apt_repo.get_by_doctor_and_date(doctor_id, parsed_date)
+    booked_times = {
+        apt.appointment_time[:5]
+        for apt in booked_appointments
+        if apt.status != "CANCELLED"
+    }
+
+    available = []
+    for t in time_slots:
+        slot_clean = t[:5]
+        if slot_clean not in booked_times:
+            available.append({
+                "slot_start": slot_clean,
+                "display_time": slot_clean,
+                "is_available": True,
+            })
+
+    return available
