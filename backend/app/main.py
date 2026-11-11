@@ -5,8 +5,10 @@ from backend.app.database import engine, Base
 # Import all models to ensure metadata registration
 import backend.app.models.user
 import backend.app.models.patient
+import backend.app.models.doctor
 from backend.app.api.v1.auth import router as auth_router
 from backend.app.api.v1.patients import router as patients_router
+from backend.app.api.v1.doctors import router as doctors_router
 
 # Create tables in development mode if SQLite is used
 Base.metadata.create_all(bind=engine)
@@ -73,6 +75,7 @@ app.add_middleware(
 # Register API routers under /api/v1
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(patients_router, prefix=settings.API_V1_PREFIX)
+app.include_router(doctors_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/health", tags=["Health"])
